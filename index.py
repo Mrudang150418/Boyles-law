@@ -42,44 +42,40 @@ elif calculation_type == "Final Volume (V2)":
             st.success(f"Final Volume (V2) is: {V2:.2f}")
         except Exception as e:
             st.error(f"Error: {e}")
+import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 
 # Boyle's Law: P * V = constant
 # Assume a constant value for simplicity
-constant = 1000  # A constant value (can represent the gas constant for this demonstration)
+constant = 1000  # Constant (can represent the gas constant for this demonstration)
 
-# Volume range (V cannot be zero)
+st.title("Real-time Boyle's Law Graph")
+st.write("This graph demonstrates Boyle's Law: Pressure vs Volume (P * V = constant)")
+
+# Create a Streamlit slider for adjusting the volume
+volume = st.slider("Adjust Volume", min_value=1, max_value=100, value=50, step=1)
+
+# Calculate the corresponding pressure using Boyle's Law (P = constant / V)
+pressure = constant / volume
+
+# Plot the graph using Matplotlib
+fig, ax = plt.subplots()
 volumes = np.linspace(1, 100, 100)
-
-# Compute corresponding pressure values using Boyle's Law (P = constant / V)
 pressures = constant / volumes
 
-# Set up the figure and axis
-fig, ax = plt.subplots()
-line, = ax.plot([], [], 'b', lw=2)
-ax.set_xlim(0, 110)
-ax.set_ylim(0, 1200)
+# Plot the Pressure vs Volume curve
+ax.plot(volumes, pressures, label="Boyle's Law Curve")
+ax.scatter(volume, pressure, color='red', label=f'Volume={volume}, Pressure={pressure:.2f}')
+
+# Set labels and title
 ax.set_xlabel('Volume')
 ax.set_ylabel('Pressure')
-ax.set_title("Boyle's Law: Pressure vs. Volume")
+ax.set_title("Pressure vs Volume (Boyle's Law)")
+ax.legend()
 
-# Initialization function for animation
-def init():
-    line.set_data([], [])
-    return line,
+# Display the plot in Streamlit
+st.pyplot(fig)
 
-# Animation function that will update the plot
-def update(frame):
-    # Update plot with current frame (volume, pressure)
-    x = volumes[:frame]  # Volumes up to the current frame
-    y = pressures[:frame]  # Corresponding pressures
-    line.set_data(x, y)
-    return line,
-
-# Create animation using FuncAnimation
-ani = FuncAnimation(fig, update, frames=len(volumes), init_func=init, blit=True, interval=100)
-
-# Display the animation
-plt.show()
+# Show the current pressure value
+st.write(f"At Volume = {volume}, Pressure = {pressure:.2f}")
