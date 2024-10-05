@@ -43,80 +43,46 @@ elif calculation_type == "Final Volume (V2)":
         except Exception as e:
             st.error(f"Error: {e}")
 
-
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-import time
 
 # Boyle's Law function
 def calculate_volume(P1, V1, P2):
     return (P1 * V1) / P2
 
 # Streamlit UI setup
-st.title("Boyle's Law Animation using Matplotlib")
+st.title("Boyle's Law: Pressure vs Volume Graph")
 
 st.write("""
 Boyle's Law states that, for a fixed amount of gas at constant temperature, 
 the pressure of the gas is inversely proportional to its volume:  
 \[ P_1 \times V_1 = P_2 \times V_2 \]
-Use the inputs below to see how pressure and volume interact!
+Use the inputs below to visualize the Boyle's Law curve.
 """)
 
 # User inputs for initial conditions
 P1 = st.number_input("Enter Initial Pressure (P1 in atm):", min_value=0.1, value=1.0, format="%.2f")
 V1 = st.number_input("Enter Initial Volume (V1 in liters):", min_value=0.1, value=1.0, format="%.2f")
 
-# Pressure range for the animation (final pressure range)
+# Pressure range for the graph (final pressure range)
 P2_min = st.number_input("Enter minimum Final Pressure (P2 in atm):", min_value=0.1, value=0.5, format="%.2f")
 P2_max = st.number_input("Enter maximum Final Pressure (P2 in atm):", min_value=P2_min, value=10.0, format="%.2f")
-num_steps = st.slider("Number of steps in the animation", min_value=10, max_value=100, value=50)
+num_points = st.slider("Number of points on the graph", min_value=10, max_value=500, value=100)
 
-# Create pressure values for the animation
-P2_values = np.linspace(P2_min, P2_max, num_steps)
+# Create pressure values for the graph
+P2_values = np.linspace(P2_min, P2_max, num_points)
 
-# Set up the figure and axis for the animation
+# Calculate corresponding volume values using Boyle's Law
+V2_values = calculate_volume(P1, V1, P2_values)
+
+# Plotting the Boyle's Law graph using Matplotlib
 fig, ax = plt.subplots()
-ax.set_xlim(P2_min, P2_max)
-ax.set_ylim(0, 1.2 * V1)
-ax.set_xlabel("Pressure (atm)")
-ax.set_ylabel("Volume (liters)")
-ax.set_title("Boyle's Law: Pressure vs Volume")
+ax.plot(P2_values, V2_values, label=f'P1={P1} atm, V1={V1} liters')
+ax.set_xlabel('Pressure (P) in atm')
+ax.set_ylabel('Volume (V) in liters')
+ax.set_title('Boyle\'s Law: Pressure vs Volume')
+ax.legend()
 
-# Initialize the line object
-line, = ax.plot([], [], lw=2)
-
-# Initialize the point object
-point, = ax.plot([], [], 'ro')
-
-# Function to initialize the plot
-def init():
-    line.set_data([], [])
-    point.set_data([], [])
-    return line, point
-
-# Function to update the plot in each animation step
-def animate(i):
-    P2 = P2_values[i]
-    V2 = calculate_volume(P1, V1, P2)
-
-    # Update the line and point for animation
-    pressures = np.linspace(P2_min, P2_max, 100)
-    volumes = calculate_volume(P1, V1, pressures)
-    line.set_data(pressures, volumes)
-    point.set_data(P2, V2)
-    
-    return line, point
-
-# Button to start the animation
-if st.button("Start Animation"):
-    # Create the animation using FuncAnimation
-    anim = FuncAnimation(fig, animate, init_func=init, frames=len(P2_values), interval=100, blit=True)
-
-    # Display the plot using Streamlit
-    st.pyplot(fig)
-
-    # To ensure the animation runs smoothly, introduce some delay after each frame
-    for _ in P2_values:
-        time.sleep(0.1)
+# Display the plot in the Streamlit app
+st.pyplot(fig)
