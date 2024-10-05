@@ -53,7 +53,7 @@ st.title("Real-time Boyle's Law Graph Calculator")
 # Boyle's Law: P1 * V1 = P2 * V2
 # Initial conditions (P1, V1)
 initial_pressure = st.slider("Initial Pressure (P1) in Pascals:", min_value=1000, max_value=100000, value=50000, step=1000)
-initial_volume = st.slider("Initial Volume (V1) in liters:", min_value=1.0, max_value=10.0, value=5.0, step=0.1)
+initial_volume = st.slider("Initial Volume (V1) in liters:", min_value=1.0, max_value=1000.0, value=5.0, step=0.1)
 
 # Create a placeholder for the graph
 plot_placeholder = st.empty()
