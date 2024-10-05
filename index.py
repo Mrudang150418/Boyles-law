@@ -45,32 +45,48 @@ elif calculation_type == "Final Volume (V2)":
 import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 # Streamlit App
-st.title('Real-time Boyle\'s Law Graph Calculator')
+st.title("Real-time Boyle's Law Graph Calculator")
 
 # Boyle's Law: P1 * V1 = P2 * V2
-# Constants for initial conditions (P1, V1)
-initial_pressure = st.slider('Initial Pressure (P1) in Pascals:', min_value=1000, max_value=100000, value=50000, step=1000)
-initial_volume = st.slider('Initial Volume (V1) in liters:', min_value=1.0, max_value=10.0, value=5.0, step=0.1)
+# Initial conditions (P1, V1)
+initial_pressure = st.slider("Initial Pressure (P1) in Pascals:", min_value=1000, max_value=100000, value=50000, step=1000)
+initial_volume = st.slider("Initial Volume (V1) in liters:", min_value=1.0, max_value=10.0, value=5.0, step=0.1)
 
-# Generate a range of volumes to calculate pressures using Boyle's Law
-volumes = np.linspace(1.0, 10.0, 100)  # Volume range
-pressures = (initial_pressure * initial_volume) / volumes  # Boyle's Law formula P2 = (P1 * V1) / V2
+# Create a placeholder for the graph
+plot_placeholder = st.empty()
 
-# Plotting the Boyle's Law curve
-fig, ax = plt.subplots()
-ax.plot(volumes, pressures, color='blue', label='Pressure vs Volume')
-ax.set_xlabel('Volume (liters)')
-ax.set_ylabel('Pressure (Pascals)')
-ax.set_title(f'Boyle\'s Law: P1 * V1 = P2 * V2\nInitial Pressure = {initial_pressure} Pa, Initial Volume = {initial_volume} L')
-ax.legend()
-ax.grid(True)
-
-# Display the graph in Streamlit
-st.pyplot(fig)
+# Time steps for animation
+time_steps = np.linspace(0, 10, 100)  # 100 time steps
+volume_range = np.linspace(1, 10, 100)  # Simulating volume changes
 
 # Animation loop
 for t in range(len(time_steps)):
-    update_plot(pressure, t)
-    time.sleep(0.9)  # Slow down the animation for visibility
+    # Simulated Volume (V2)
+    current_volume = volume_range[t % len(volume_range)]
+    
+    # Calculate Pressure (P2) using Boyle's Law: P1 * V1 = P2 * V2 => P2 = (P1 * V1) / V2
+    current_pressure = (initial_pressure * initial_volume) / current_volume
+
+    # Generate the plot
+    fig, ax = plt.subplots()
+    
+    # Plot the current pressure and volume
+    ax.plot(volume_range[:t+1], (initial_pressure * initial_volume) / volume_range[:t+1], color='blue', label='Pressure (P)')
+    ax.scatter(current_volume, current_pressure, color='red')  # Mark the current point
+
+    # Set plot labels and limits
+    ax.set_xlabel('Volume (liters)')
+    ax.set_ylabel('Pressure (Pascals)')
+    ax.set_title("Boyle's Law: Pressure vs Volume")
+    ax.set_xlim([1, 10])
+    ax.set_ylim([0, max(initial_pressure * initial_volume / volume_range)])
+    ax.legend()
+
+    # Update the plot in Streamlit
+    plot_placeholder.pyplot(fig)
+
+    # Slow down the animation for visualization
+    time.sleep(0.1)
