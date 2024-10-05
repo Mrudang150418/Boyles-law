@@ -43,39 +43,34 @@ elif calculation_type == "Final Volume (V2)":
         except Exception as e:
             st.error(f"Error: {e}")
 import streamlit as st
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-# Boyle's Law: P * V = constant
-# Assume a constant value for simplicity
-constant = 1000  # Constant (can represent the gas constant for this demonstration)
+# Streamlit App
+st.title('Real-time Boyle\'s Law Graph Calculator')
 
-st.title("Real-time Boyle's Law Graph")
-st.write("This graph demonstrates Boyle's Law: Pressure vs Volume (P * V = constant)")
+# Boyle's Law: P1 * V1 = P2 * V2
+# Constants for initial conditions (P1, V1)
+initial_pressure = st.slider('Initial Pressure (P1) in Pascals:', min_value=1000, max_value=100000, value=50000, step=1000)
+initial_volume = st.slider('Initial Volume (V1) in liters:', min_value=1.0, max_value=10.0, value=5.0, step=0.1)
 
-# Create a Streamlit slider for adjusting the volume
-volume = st.slider("Adjust Volume", min_value=1, max_value=100, value=50, step=1)
+# Generate a range of volumes to calculate pressures using Boyle's Law
+volumes = np.linspace(1.0, 10.0, 100)  # Volume range
+pressures = (initial_pressure * initial_volume) / volumes  # Boyle's Law formula P2 = (P1 * V1) / V2
 
-# Calculate the corresponding pressure using Boyle's Law (P = constant / V)
-pressure = constant / volume
-
-# Plot the graph using Matplotlib
+# Plotting the Boyle's Law curve
 fig, ax = plt.subplots()
-volumes = np.linspace(1, 100, 100)
-pressures = constant / volumes
-
-# Plot the Pressure vs Volume curve
-ax.plot(volumes, pressures, label="Boyle's Law Curve")
-ax.scatter(volume, pressure, color='red', label=f'Volume={volume}, Pressure={pressure:.2f}')
-
-# Set labels and title
-ax.set_xlabel('Volume')
-ax.set_ylabel('Pressure')
-ax.set_title("Pressure vs Volume (Boyle's Law)")
+ax.plot(volumes, pressures, color='blue', label='Pressure vs Volume')
+ax.set_xlabel('Volume (liters)')
+ax.set_ylabel('Pressure (Pascals)')
+ax.set_title(f'Boyle\'s Law: P1 * V1 = P2 * V2\nInitial Pressure = {initial_pressure} Pa, Initial Volume = {initial_volume} L')
 ax.legend()
+ax.grid(True)
 
-# Display the plot in Streamlit
+# Display the graph in Streamlit
 st.pyplot(fig)
 
-# Show the current pressure value
-st.write(f"At Volume = {volume}, Pressure = {pressure:.2f}")
+# Animation loop
+for t in range(len(time_steps)):
+    update_plot(pressure, t)
+    time.sleep(0.9)  # Slow down the animation for visibility
