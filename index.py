@@ -81,7 +81,7 @@ for t in range(len(time_steps)):
     ax.set_xlabel('Volume (liters)')
     ax.set_ylabel('Pressure (Pascals)')
     ax.set_title("Boyle's Law: Pressure vs Volume")
-    ax.set_xlim([1, 10])
+    ax.set_xlim([1, 1000])
     ax.set_ylim([0, max(initial_pressure * initial_volume / volume_range)])
     ax.legend()
 
