@@ -42,49 +42,6 @@ elif calculation_type == "Final Volume (V2)":
             st.success(f"Final Volume (V2) is: {V2:.2f}")
         except Exception as e:
             st.error(f"Error: {e}")
-
-import streamlit as st
-import numpy as np
-import matplotlib.pyplot as plt
-# Boyle's Law function
-def calculate_volume(P1, V1, P2):
-    return (P1 * V1) / P2
-
-# Streamlit UI setup
-st.title("Boyle's Law: Pressure vs Volume Graph")
-
-st.write("""
-Boyle's Law states that, for a fixed amount of gas at constant temperature, 
-the pressure of the gas is inversely proportional to its volume:  
-\[ P_1 \times V_1 = P_2 \times V_2 \]
-Use the inputs below to visualize the Boyle's Law curve.
-""")
-
-# User inputs for initial conditions
-P1 = st.number_input("Enter Initial Pressure (P1 in atm):", min_value=0.1, value=1.0, format="%.2f")
-V1 = st.number_input("Enter Initial Volume (V1 in liters):", min_value=0.1, value=1.0, format="%.2f")
-
-# Pressure range for the graph (final pressure range)
-P2_min = st.number_input("Enter minimum Final Pressure (P2 in atm):", min_value=0.1, value=0.5, format="%.2f")
-P2_max = st.number_input("Enter maximum Final Pressure (P2 in atm):", min_value=P2_min, value=10.0, format="%.2f")
-num_points = st.slider("Number of points on the graph", min_value=10, max_value=500, value=100)
-
-# Create pressure values for the graph
-P2_values = np.linspace(P2_min, P2_max, num_points)
-
-# Calculate corresponding volume values using Boyle's Law
-V2_values = calculate_volume(P1, V1, P2_values)
-
-# Plotting the Boyle's Law graph using Matplotlib
-fig, ax = plt.subplots()
-ax.plot(P2_values, V2_values, label=f'P1={P1} atm, V1={V1} liters')
-ax.set_xlabel('Pressure (P) in atm')
-ax.set_ylabel('Volume (V) in liters')
-ax.set_title('Boyle\'s Law: Pressure vs Volume')
-ax.legend()
-
-# Display the plot in the Streamlit app
-st.pyplot(fig)
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
