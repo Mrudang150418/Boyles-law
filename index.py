@@ -46,7 +46,6 @@ elif calculation_type == "Final Volume (V2)":
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-
 # Boyle's Law function
 def calculate_volume(P1, V1, P2):
     return (P1 * V1) / P2
