@@ -85,3 +85,44 @@ ax.legend()
 
 # Display the plot in the Streamlit app
 st.pyplot(fig)
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+# Boyle's Law: P * V = constant
+# Assume a constant value for simplicity
+constant = 1000  # A constant value (can represent the gas constant for this demonstration)
+
+# Volume range (V cannot be zero)
+volumes = np.linspace(1, 100, 100)
+
+# Compute corresponding pressure values using Boyle's Law (P = constant / V)
+pressures = constant / volumes
+
+# Set up the figure and axis
+fig, ax = plt.subplots()
+line, = ax.plot([], [], 'b', lw=2)
+ax.set_xlim(0, 110)
+ax.set_ylim(0, 1200)
+ax.set_xlabel('Volume')
+ax.set_ylabel('Pressure')
+ax.set_title("Boyle's Law: Pressure vs. Volume")
+
+# Initialization function for animation
+def init():
+    line.set_data([], [])
+    return line,
+
+# Animation function that will update the plot
+def update(frame):
+    # Update plot with current frame (volume, pressure)
+    x = volumes[:frame]  # Volumes up to the current frame
+    y = pressures[:frame]  # Corresponding pressures
+    line.set_data(x, y)
+    return line,
+
+# Create animation using FuncAnimation
+ani = FuncAnimation(fig, update, frames=len(volumes), init_func=init, blit=True, interval=100)
+
+# Display the animation
+plt.show()
